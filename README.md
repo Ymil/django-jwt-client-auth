@@ -13,7 +13,7 @@ Esta es una aplicación cliente para Django que permite autenticar usuarios medi
 1. **Instalación:** Para utilizar esta aplicación, asegúrate de tener Django instalado en tu entorno virtual. Luego, puedes instalar la aplicación cliente mediante el siguiente comando:
 
     ```bash
-    pip install -e git+https://github.com/usuario_ejemplo/django-external-auth-client.git#egg=external_auth_client
+    pip install -e git+https://github.com/Ymil/django-jwt-client-auth.git
     ```
 
 2. **Configuración de la aplicación:** Añade `external_auth_client` a la lista `INSTALLED_APPS` en el archivo `settings.py` de tu proyecto Django:
@@ -48,7 +48,7 @@ Esta es una aplicación cliente para Django que permite autenticar usuarios medi
 
 ### Variables
 
-Las siguientes variables se pueden configurar en el settings.py del proyecto.
+Las siguientes variables se deben/pueden configurar en el settings.py del proyecto.
 
 ```python
 JWT_ENDPOINT # URL de autenticación [Obligatoria]
@@ -60,6 +60,10 @@ JWT_ENDPOINT_ERROR_MESSAGE_FIELD # Indica el campo donde se devuelve la respuest
 ### Template
 
 Podes agregar en tu proyecto el template login.html para customizar el login
+
+### Acceso al JWT
+
+Se puede acceder al JWT mediante la variable `request.session["JWT"]`
 
 ## Consideraciones finales
 

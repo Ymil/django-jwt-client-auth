@@ -50,6 +50,7 @@ def login_view(request):
                 form.add_error(
                     None, e.args[1][JWT_ENDPOINT_ERROR_MESSAGE_FIELD])
 
+            username = username.lower()
             User.objects.get_or_create(username=username)
             user = JWTBackend().authenticate(request, username=username, password=password)
             auth = login(request, user)

@@ -1,18 +1,15 @@
-# login_app/views.py
-
+from . import JWT_ENDPOINT_ERROR_MESSAGE_FIELD, JWT_REDIRECT_URL, JWT_ENDPOINT, JWT_ENDPOINT_SSL_VERIFY
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from .backends import JWTBackend
 from .forms import LoginForm
-from django.contrib.auth.models import User
-from django.contrib.auth import logout
-
-
-
 import requests
-from . import JWT_ENDPOINT_ERROR_MESSAGE_FIELD, JWT_REDIRECT_URL, JWT_ENDPOINT, JWT_ENDPOINT_SSL_VERIFY
+
+User = get_user_model()
 
 
 def login_by_jwt(username: str, password: str) -> str:
@@ -47,8 +44,12 @@ def login_view(request):
             try:
                 jwt = login_by_jwt(username, password)
             except Exception as e:
-                form.add_error(
-                    None, e.args[1][JWT_ENDPOINT_ERROR_MESSAGE_FIELD])
+                if(len(e.args) > 1 and JWT_ENDPOINT_ERROR_MESSAGE_FIELD in e.args[1]):
+                    form.add_error(
+                        None, e.args[1][JWT_ENDPOINT_ERROR_MESSAGE_FIELD]
+                    )
+                else:
+                    raise e
 
             username = username.lower()
             User.objects.get_or_create(username=username)

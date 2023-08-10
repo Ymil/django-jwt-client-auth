@@ -43,6 +43,12 @@ def login_view(request):
             jwt = None
             try:
                 jwt = login_by_jwt(username, password)
+                username = username.lower()
+                User.objects.get_or_create(username=username)
+                user = JWTBackend().authenticate(request, username=username, password=password)
+                login(request, user)
+                request.session['jwt'] = jwt
+                return redirect(JWT_REDIRECT_URL)
             except Exception as e:
                 if(len(e.args) > 1 and JWT_ENDPOINT_ERROR_MESSAGE_FIELD in e.args[1]):
                     form.add_error(
@@ -50,13 +56,6 @@ def login_view(request):
                     )
                 else:
                     raise e
-
-            username = username.lower()
-            User.objects.get_or_create(username=username)
-            user = JWTBackend().authenticate(request, username=username, password=password)
-            auth = login(request, user)
-            request.session['jwt'] = jwt
-            return redirect(JWT_REDIRECT_URL)
     else:
         form = LoginForm()
 
